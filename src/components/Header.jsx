@@ -1,6 +1,7 @@
 /* eslint-disable import/prefer-default-export */
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import emailjs from '@emailjs/browser';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
@@ -11,9 +12,42 @@ import '../styles/header.css';
 
 export const Header = () => {
   const [show, setShow] = useState(false);
+  const [emailValue, setEmailValue] = useState('');
+  const [subjectValue, setSubjectValue] = useState('');
+  const [look, setLook] = useState(false);
+  const [message, setMessage] = useState('');
 
-  const handleClose = () => setShow(false);
+  const handleGo = () => setLook(false);
+  const handleLook = () => setLook(true);
+
+  const handleReset = () => {
+    setSubjectValue('');
+    setEmailValue('');
+  };
+
+  const handleClose = () => {
+    setShow(false);
+    handleReset();
+  };
+
   const handleShow = () => setShow(true);
+  const handleClick = () => {
+    const content = { emailValue, subjectValue };
+    emailjs.send('service_b8fov3c', 'template_xkaa9ue', content, 'c3RthNeKMaL_W7Y1S')
+      .then((result) => {
+        let alert = result.text;
+        alert = ' Thanks for your message';
+        setMessage(alert);
+        handleLook();
+      }, (error) => {
+        let alertwo = error.text;
+        alertwo += 'There is an error, please try again';
+        setMessage(alertwo);
+        handleLook();
+      });
+    handleReset();
+    handleClose();
+  };
 
   return (
     <>
@@ -30,7 +64,6 @@ export const Header = () => {
           </Navbar.Collapse>
         </Container>
       </Navbar>
-
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Please leave a comment</Modal.Title>
@@ -40,12 +73,16 @@ export const Header = () => {
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Label>Email address</Form.Label>
               <Form.Control
+                value={emailValue}
+                onChange={(event) => setEmailValue(event.target.value)}
                 type="email"
                 placeholder="name@example.com"
                 autoFocus
               />
             </Form.Group>
             <Form.Group
+              value={subjectValue}
+              onChange={(event) => setSubjectValue(event.target.value)}
               className="mb-3"
               controlId="exampleForm.ControlTextarea1"
             >
@@ -58,8 +95,22 @@ export const Header = () => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Save Changes
+          <Button variant="primary" onClick={handleClick}>
+            Submit
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={look} onHide={handleGo}>
+        <Modal.Header closeButton>
+          <Modal.Title>Gerson Sanchez</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {message}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleGo}>
+            Close
           </Button>
         </Modal.Footer>
       </Modal>
