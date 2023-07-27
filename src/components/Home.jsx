@@ -2,7 +2,7 @@
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import { IconBox } from './IconBox';
+import { About } from './About';
 import '../styles/home.css';
 
 export const Home = () => (
@@ -137,6 +137,6 @@ export const Home = () => (
         </Dropdown.Item>
       </DropdownButton>
     </div>
-    <IconBox />
+    <About />
   </>
 );
